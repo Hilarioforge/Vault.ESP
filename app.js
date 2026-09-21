@@ -37,7 +37,8 @@ async function start(){
   onAuthStateChanged(auth,async user=>{
     stopListeners(); state.user=user;
     if(!user){ showAuth(); return; }
-    await setDoc(doc(db,'users',user.uid),{displayName:user.displayName||firstName(user),email:user.email||'',lastLoginAt:serverTimestamp()},{merge:true});
+    try{ await setDoc(doc(db,'users',user.uid),{displayName:user.displayName||firstName(user),email:user.email||'',lastLoginAt:serverTimestamp()},{merge:true}); }
+    catch(error){ console.error(error); toast(errorMessage(error)); }
     updateProfileUI(); showApp(); startListeners();
   });
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
