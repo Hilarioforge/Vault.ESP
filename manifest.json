@@ -1,0 +1,26 @@
+{
+  "name": "Vault — Control financiero personal",
+  "short_name": "Vault",
+  "description": "Controla ingresos, gastos, cuentas y objetivos con privacidad.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#12335b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "vault-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "vault-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

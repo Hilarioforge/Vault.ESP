@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#12335b">
+  <meta name="description" content="Vault — control financiero personal sencillo, seguro y organizado.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Vault">
+  <title>Vault — Tu dinero bajo control</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="vault-icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="vault-icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loading-screen" class="loading-screen"><div class="brand-mark">V</div><div class="loader"></div></div>
+
+  <main id="auth-screen" class="auth-screen" hidden>
+    <section class="auth-hero">
+      <div class="brand"><div class="brand-mark">V</div><span>Vault</span></div>
+      <div><span class="eyebrow">FINANZAS SIN COMPLICACIONES</span><h1>Tu dinero.<br><em>Tus decisiones.</em></h1><p>Organiza ingresos, gastos, cuentas y objetivos en un solo lugar.</p></div>
+      <div class="trust-row"><span>✓ Datos privados</span><span>✓ Sincronización segura</span><span>✓ Acceso desde cualquier dispositivo</span></div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="mobile-brand brand"><div class="brand-mark">V</div><span>Vault</span></div>
+      <div id="config-warning" class="alert warning" hidden><strong>Configuración necesaria</strong><span>Conecta este proyecto a Firebase antes de publicarlo. Consulta el archivo CONFIGURACION.md.</span></div>
+      <div class="auth-tabs"><button class="auth-tab active" data-auth-tab="login">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register">Crear cuenta</button></div>
+
+      <form id="login-form" class="auth-form">
+        <div><h2>Te damos la bienvenida</h2><p>Accede a tus finanzas.</p></div>
+        <label>Correo electrónico<input id="login-email" type="email" autocomplete="username" placeholder="tu@correo.es" required></label>
+        <label>Contraseña<span class="password-wrap"><input id="login-password" type="password" autocomplete="current-password" placeholder="Tu contraseña" required><button class="show-password" type="button" aria-label="Mostrar contraseña">Ver</button></span></label>
+        <button id="forgot-password" class="text-button right" type="button">He olvidado mi contraseña</button>
+        <button class="primary-button" type="submit">Iniciar sesión</button>
+      </form>
+
+      <form id="register-form" class="auth-form" hidden>
+        <div><h2>Crea tu cuenta</h2><p>Empieza a organizar tus finanzas hoy.</p></div>
+        <label>Nombre<input id="register-name" type="text" autocomplete="name" minlength="2" maxlength="60" placeholder="¿Cómo quieres que te llamemos?" required></label>
+        <label>Correo electrónico<input id="register-email" type="email" autocomplete="username" placeholder="tu@correo.es" required></label>
+        <label>Contraseña<span class="password-wrap"><input id="register-password" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo de 8 caracteres" required><button class="show-password" type="button" aria-label="Mostrar contraseña">Ver</button></span></label>
+        <label class="check-label"><input id="terms-check" type="checkbox" required><span>He leído y acepto los <a href="termos.html" target="_blank">Términos de uso</a> y la <a href="privacidade.html" target="_blank">Política de privacidad</a>.</span></label>
+        <button class="primary-button" type="submit">Crear mi cuenta</button>
+      </form>
+
+      <div class="divider"><span>o continúa con</span></div>
+      <div class="social-buttons"><button id="google-login" class="social-button" type="button"><span class="google-g">G</span>Google</button><button id="apple-login" class="social-button apple" type="button"><span>●</span> Apple</button></div>
+      <p class="auth-foot">Tu sesión permanece iniciada de forma segura en este dispositivo.</p>
+    </section>
+  </main>
+
+  <div id="app-shell" class="app-shell" hidden>
+    <header class="app-header">
+      <div class="brand"><div class="brand-mark">V</div><span>Vault</span></div>
+      <div class="header-actions"><button id="install-app" class="icon-button" hidden title="Instalar aplicación">↓</button><button id="profile-button" class="avatar" aria-label="Abrir ajustes">U</button></div>
+    </header>
+
+    <div id="email-banner" class="email-banner" hidden><span>Confirma tu correo electrónico para proteger tu cuenta.</span><button id="resend-verification">Reenviar</button></div>
+
+    <div class="app-content">
+      <section id="page-home" class="page active">
+        <div class="hello-row"><div><p id="greeting-period">Hola,</p><h1 id="greeting-name">¡Hola!</h1></div><button class="add-round" data-open-transaction aria-label="Nuevo movimiento">+</button></div>
+        <div class="month-switcher"><button data-month="-1">‹</button><strong id="home-month">—</strong><button data-month="1">›</button></div>
+        <article class="balance-card"><span>Saldo total</span><strong id="total-balance">0,00 €</strong><small id="account-count">0 cuentas registradas</small></article>
+        <div class="summary-grid"><article class="summary-card income"><span>Ingresos</span><strong id="month-income">0,00 €</strong></article><article class="summary-card expense"><span>Gastos</span><strong id="month-expense">0,00 €</strong></article></div>
+        <div class="section-heading"><h2>Resumen del mes</h2><span id="savings-rate">0 % ahorrado</span></div>
+        <div class="progress-card"><div><span>Resultado del mes</span><strong id="month-result">0,00 €</strong></div><div class="progress-track"><div id="month-progress"></div></div></div>
+        <div class="section-heading"><h2>Gastos por categoría</h2></div><div id="category-breakdown" class="list-card empty-box">No hay gastos este mes.</div>
+        <div class="section-heading"><h2>Últimos movimientos</h2><button class="text-button" data-go-page="transactions">Ver todos</button></div><div id="recent-transactions" class="transaction-list"></div>
+      </section>
+
+      <section id="page-transactions" class="page">
+        <div class="page-heading"><div><p>Movimientos</p><h1>Movimientos</h1></div><button class="primary-small" data-open-transaction>+ Añadir</button></div>
+        <div class="month-switcher"><button data-month="-1">‹</button><strong id="tx-month">—</strong><button data-month="1">›</button></div>
+        <div class="segmented" id="tx-filters"><button class="active" data-filter="all">Todos</button><button data-filter="income">Ingresos</button><button data-filter="expense">Gastos</button></div>
+        <div id="all-transactions" class="transaction-list"></div>
+      </section>
+
+      <section id="page-accounts" class="page">
+        <div class="page-heading"><div><p>Dónde está tu dinero</p><h1>Cuentas</h1></div><button class="primary-small" id="add-account">+ Cuenta</button></div>
+        <article class="total-card"><span>Patrimonio en cuentas</span><strong id="accounts-total">0,00 €</strong></article><div id="accounts-list" class="accounts-list"></div>
+      </section>
+
+      <section id="page-goals" class="page">
+        <div class="page-heading"><div><p>Planes para el futuro</p><h1>Objetivos</h1></div><button class="primary-small" id="add-goal">+ Objetivo</button></div><div id="goals-list" class="goals-list"></div>
+      </section>
+
+      <section id="page-settings" class="page">
+        <div class="page-heading"><div><p>Tu cuenta</p><h1>Ajustes</h1></div></div>
+        <article class="profile-card"><div id="settings-avatar" class="avatar large">U</div><div><strong id="settings-name">Usuario</strong><span id="settings-email">—</span></div></article>
+        <div class="settings-group"><button id="edit-profile">Editar nombre <span>›</span></button><button id="send-reset">Cambiar contraseña <span>›</span></button><button id="manage-categories">Nueva categoría personalizada <span>+</span></button><button id="export-data">Exportar movimientos <span>↓</span></button><button id="logout">Cerrar sesión <span>›</span></button></div>
+        <div id="custom-categories" class="settings-group"></div>
+        <div class="settings-group danger"><button id="delete-account">Eliminar cuenta y datos <span>›</span></button></div>
+        <p class="version">Vault 1.1 · Control financiero personal</p>
+      </section>
+    </div>
+
+    <nav class="bottom-nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="transactions"><span>≡</span>Movimientos</button><button data-page="accounts"><span>▣</span>Cuentas</button><button data-page="goals"><span>◎</span>Objetivos</button><button data-page="settings"><span>⚙</span>Ajustes</button></nav>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop" hidden>
+    <section id="transaction-modal" class="modal" hidden><div class="modal-head"><h2 id="transaction-modal-title">Nuevo movimiento</h2><button data-close-modal>×</button></div><form id="transaction-form">
+      <div class="segmented"><button class="active" type="button" data-tx-type="expense">Gasto</button><button type="button" data-tx-type="income">Ingreso</button></div>
+      <label>Descripción<input id="tx-description" required maxlength="80" placeholder="Ej.: Supermercado"></label><div class="form-grid"><label>Importe<input id="tx-amount" required type="number" min="0.01" step="0.01" placeholder="0,00"></label><label>Fecha<input id="tx-date" required type="date"></label></div>
+      <label>Categoría<select id="tx-category"></select></label><label>Cuenta<select id="tx-account"><option value="">Sin cuenta vinculada</option></select></label>
+      <label id="tx-origin-field" hidden>Origen del ingreso<select id="tx-origin"><option value="pix">Bizum</option><option value="cash">Efectivo</option><option value="debit_card">Tarjeta de débito</option><option value="credit_card">Tarjeta de crédito</option><option value="bank_transfer">Transferencia bancaria</option><option value="other">Otro</option></select></label>
+      <button class="primary-button" type="submit">Guardar movimiento</button><button id="delete-transaction" class="delete-link" type="button" hidden>Eliminar movimiento</button></form></section>
+
+    <section id="account-modal" class="modal" hidden><div class="modal-head"><h2>Nueva cuenta</h2><button data-close-modal>×</button></div><form id="account-form"><label>Nombre<input id="account-name" required maxlength="50" placeholder="Ej.: Cuenta principal"></label><label>Tipo<select id="account-type"><option value="checking">Cuenta corriente</option><option value="wallet">Efectivo</option><option value="savings">Ahorro</option><option value="investment">Inversión</option><option value="other">Otra</option></select></label><label>Saldo inicial<input id="account-opening" type="number" step="0.01" value="0"></label><label>Color<select id="account-color"><option value="#2d6cdf">Azul</option><option value="#00a67e">Verde</option><option value="#7c5ce5">Morado</option><option value="#f59f32">Naranja</option><option value="#e55361">Rojo</option></select></label><button class="primary-button">Crear cuenta</button></form></section>
+
+    <section id="goal-modal" class="modal" hidden><div class="modal-head"><h2>Nuevo objetivo</h2><button data-close-modal>×</button></div><form id="goal-form"><label>Nombre<input id="goal-name" required maxlength="60" placeholder="Ej.: Fondo de emergencia"></label><div class="form-grid"><label>Importe objetivo<input id="goal-target" required type="number" min="1" step="0.01"></label><label>Ya ahorrado<input id="goal-saved" type="number" min="0" step="0.01" value="0"></label></div><label>Fecha límite<input id="goal-deadline" type="date"></label><button class="primary-button">Crear objetivo</button></form></section>
+
+    <section id="category-modal" class="modal" hidden><div class="modal-head"><h2>Nueva categoría</h2><button data-close-modal>×</button></div><form id="category-form"><label>Nombre<input id="category-name" required maxlength="40" placeholder="Ej.: Mascotas"></label><label>Tipo<select id="category-type"><option value="expense">Gasto</option><option value="income">Ingreso</option></select></label><button class="primary-button">Crear categoría</button></form></section>
+
+    <section id="confirm-modal" class="modal" hidden><div class="modal-head"><h2 id="confirm-title">Confirmar</h2><button data-close-modal>×</button></div><p id="confirm-message"></p><label id="confirm-input-wrap" hidden>Escribe ELIMINAR<input id="confirm-input"></label><div class="modal-actions"><button class="secondary-button" data-close-modal>Cancelar</button><button id="confirm-action" class="danger-button">Confirmar</button></div></section>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
