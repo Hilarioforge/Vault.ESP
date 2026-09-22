@@ -1,7 +1,7 @@
 // Configuração do projeto Firebase exclusivo do Vault (vault-espana).
 export const firebaseConfig = {
   apiKey: "AIzaSyBeY7TI7EXfczqB3Pe9Ecs_pwEcEMir_Ho",
-  authDomain: "vault-espana.web.app",
+  authDomain: "vault-espana.firebaseapp.com",
   projectId: "vault-espana",
   storageBucket: "vault-espana.firebasestorage.app",
   messagingSenderId: "118884172551",

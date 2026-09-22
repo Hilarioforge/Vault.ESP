@@ -33,14 +33,14 @@ async function start(){
   if(!firebaseConfigured){ showAuth(); $('#config-warning').hidden=false; $$('#login-form button,#register-form button,.social-button').forEach(button=>button.disabled=true); return; }
   const app=initializeApp(firebaseConfig); auth=getAuth(app); db=getFirestore(app); functions=getFunctions(app,'us-central1'); auth.useDeviceLanguage();
   await setPersistence(auth,browserLocalPersistence);
-  try{ await getRedirectResult(auth); }catch(error){ toast(errorMessage(error)); }
-  onAuthStateChanged(auth,async user=>{
+  onAuthStateChanged(auth,user=>{
     stopListeners(); state.user=user;
     if(!user){ showAuth(); return; }
-    try{ await setDoc(doc(db,'users',user.uid),{displayName:user.displayName||firstName(user),email:user.email||'',lastLoginAt:serverTimestamp()},{merge:true}); }
-    catch(error){ console.error(error); toast(errorMessage(error)); }
     updateProfileUI(); showApp(); startListeners();
+    setDoc(doc(db,'users',user.uid),{displayName:user.displayName||firstName(user),email:user.email||'',lastLoginAt:serverTimestamp()},{merge:true})
+      .catch(error=>{console.error(error);toast('Has iniciado sesión, pero no se ha podido sincronizar tu perfil.');});
   });
+  getRedirectResult(auth).catch(error=>{console.error(error);toast(errorMessage(error));showAuth();});
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
 }
 
@@ -64,7 +64,7 @@ function bindEvents(){
 async function loginEmail(event){ event.preventDefault();setBusy('#login-form',true);try{await signInWithEmailAndPassword(auth,$('#login-email').value.trim(),$('#login-password').value);}catch(error){toast(errorMessage(error));}finally{setBusy('#login-form',false);} }
 async function registerEmail(event){ event.preventDefault();setBusy('#register-form',true);try{const credential=await createUserWithEmailAndPassword(auth,$('#register-email').value.trim(),$('#register-password').value);await updateProfile(credential.user,{displayName:$('#register-name').value.trim()});if(state.user)updateProfileUI();await sendEmailVerification(credential.user);toast('¡Cuenta creada! Te hemos enviado un correo de confirmación.');}catch(error){toast(errorMessage(error));}finally{setBusy('#register-form',false);} }
 async function forgotPassword(){ const email=$('#login-email').value.trim();if(!email){toast('Introduce primero tu correo electrónico.');return;}try{await sendPasswordResetEmail(auth,email);toast('Te hemos enviado el enlace de recuperación.');}catch(error){toast(errorMessage(error));} }
-async function socialLogin(kind){ try{let provider;if(kind==='google'){provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});}else{provider=new OAuthProvider('apple.com');provider.addScope('email');provider.addScope('name');provider.setCustomParameters({locale:'es_ES'});}await signInWithRedirect(auth,provider);}catch(error){toast(errorMessage(error));} }
+async function socialLogin(kind){ try{let provider;if(kind==='google'){provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});}else{provider=new OAuthProvider('apple.com');provider.addScope('email');provider.addScope('name');provider.setCustomParameters({locale:'es_ES'});}const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||matchMedia('(display-mode: standalone)').matches;if(mobile)await signInWithRedirect(auth,provider);else await signInWithPopup(auth,provider);}catch(error){toast(errorMessage(error));} }
 
 function startListeners(){ const base=collection(db,'users',state.user.uid,'transactions');state.unsubscribers=[onSnapshot(query(base,orderBy('createdAt','desc')),snap=>{state.transactions=snap.docs.map(item=>({id:item.id,...item.data()}));renderAll();},syncError),onSnapshot(query(collection(db,'users',state.user.uid,'accounts'),orderBy('createdAt','asc')),snap=>{state.accounts=snap.docs.map(item=>({id:item.id,...item.data()}));renderAll();},syncError),onSnapshot(query(collection(db,'users',state.user.uid,'goals'),orderBy('createdAt','asc')),snap=>{state.goals=snap.docs.map(item=>({id:item.id,...item.data()}));renderGoals();},syncError),onSnapshot(query(collection(db,'users',state.user.uid,'categories'),orderBy('createdAt','asc')),snap=>{state.categories=snap.docs.map(item=>({id:item.id,...item.data()}));renderCategories();},syncError)]; }
 function stopListeners(){state.unsubscribers.forEach(unsubscribe=>unsubscribe());state.unsubscribers=[];state.transactions=[];state.accounts=[];state.goals=[];state.categories=[];}
